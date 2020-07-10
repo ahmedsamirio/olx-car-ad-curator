@@ -138,9 +138,10 @@ def scrape_ad(link, headers, sem, sleep=False):
     
     sem.acquire(blocking=False)
 
-    if np.random.random_sample() < 0.1:
-        time.sleep(5)
-        
+    if sleep:
+        if np.random.random_sample() < 0.5:
+            time.sleep(1)
+
     link_res = get_res(link['href'], max_retries, headers)
     link_soup = bs4.BeautifulSoup(link_res.text, features="lxml")
     row = make_row(link_soup, link)
