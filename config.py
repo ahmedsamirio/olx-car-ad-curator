@@ -1,7 +1,7 @@
 max_retries = 5
 batch_count = 1
 
-all_rows = []
+all_ad_dicts = []
 n_pages = 0
 n_cars = 0
 

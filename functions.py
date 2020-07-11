@@ -12,7 +12,7 @@ def get_full_ad_info(link_soup):
     """ Returns the full ad infomation in a readable format """
     full_raw_info = link_soup.select('strong a')  # full ad information in soupified html format
     full_processed_info = []
-    for info in raw_info:
+    for info in full_raw_info:
         processed_info = re.sub('\t|\n', '', info.get_text())
         full_processed_info.append(processed_info)
     return full_processed_info
@@ -25,7 +25,7 @@ def get_full_ad_info_ids(link_soup):
 
 def get_info_from_id(id, full_info, full_info_ids):
     """ Return a single ad info by specifing it's id counterpart """
-    if id in info_ids:
+    if id in full_info_ids:
         info_idx = full_info_ids.index(id)  # get the id index to return its info counterpart
         return full_info[info_idx]
 
@@ -50,12 +50,12 @@ def make_ad_dict(link_soup, link):
 
     ad_dict['Date'] = get_date(link_soup)
     ad_dict['Price'] = get_price(link_soup)
-    ad_dict['Brand'] = get_brand(link_soup, ad_dict['City'])
     ad_dict['City'], ad_dict['Governerate'] = get_ad_location(link_soup)
+    ad_dict['Brand'] = get_brand(link_soup, ad_dict['City'])
     ad_dict['URL'] = link['href']
 
-    ad_info = get_ad_info(link_soup)
-    ad_info_ids = get_ad_info_ids(link_soup)
+    ad_info = get_full_ad_info(link_soup)
+    ad_info_ids = get_full_ad_info_ids(link_soup)
 
     ad_dict['CC'] = get_info_from_id('المحرك (سي سي)', ad_info, ad_info_ids)
     ad_dict['Year'] = get_info_from_id('السنة', ad_info, ad_info_ids)
@@ -66,12 +66,14 @@ def make_ad_dict(link_soup, link):
     ad_dict['Transmission'] = get_info_from_id('ناقل الحركة', ad_info, ad_info_ids)
 
     if 'إضافات' in ad_info_ids:
-        ad_dict['Features'] = get_car_features(full_info, full_info_ids)
+        ad_dict['Features'] = get_car_features(ad_info, ad_info_ids)
 
     ad_dict['Color'] = get_info_from_id('اللون', ad_info, ad_info_ids)
     ad_dict['Chasis'] = get_info_from_id('نوع الهيكل', ad_info, ad_info_ids)
     ad_dict['Ad_type'] = get_info_from_id('نوع الإعلان', ad_info, ad_info_ids)
-    
+
+    print("Finished ad dict")
+
     return ad_dict
 
 def get_date(link_soup):
