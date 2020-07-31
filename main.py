@@ -12,7 +12,7 @@ for batch in range(1, 501, batch_count):
     print("  Finished mini-batch {}  ".format(count).center(100, '='))
     count += 1
     
-df = pd.DataFrame(all_rows)
+df = pd.DataFrame(all_ad_dicts)
 
 df.to_csv('olx_raw.csv', index=False)
 print('The scraped data was succesfully converted into olx_raw.csv')
