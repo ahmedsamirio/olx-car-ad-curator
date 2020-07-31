@@ -70,7 +70,7 @@ if __name__ == "__main__":
     model = ""
     year = ""
 
-    raw_df = pd.read_csv('olx_raw.csv')
+    raw_df = pd.read_csv('old_olx_raw.csv')
     df = df_preprocessing(raw_df)
 
     mask = (df.Model == model) & (df.Year.isin(year))
