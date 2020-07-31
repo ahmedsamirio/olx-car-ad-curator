@@ -1,5 +1,8 @@
 import pickle
 
+import numpy as np
+import pandas as pd
+
 
 def load_used_specs():
     file = open("specification.pkl", "rb")
@@ -29,7 +32,7 @@ def check_feature(x, feature):
 # One-hot encode other car specifications (Mileage, Transmission, CC, etc..)
 def one_hot_encode_features(df, features_index):
     for feature_en, feature_ar in features_index.items():
-        df[feature_en] = df.Features.apply(lambda x: check_feature(x, features))
+        df[feature_en] = df.Features.apply(lambda x: check_feature(x, feature_ar))
     return df.iloc[:, 17:]
 
 
@@ -67,8 +70,8 @@ def make_ad_vector(df, features_index, features_encoder, specs):
 
 
 if __name__ == "__main__":
-    model = ""
-    year = ""
+    model = "جولف"
+    year = [2005]
 
     raw_df = pd.read_csv('old_olx_raw.csv')
     df = df_preprocessing(raw_df)
@@ -91,11 +94,12 @@ if __name__ == "__main__":
     one_hot_specs = encoder.transform(car_df[specs])
     one_hot_array = np.concatenate([one_hot_specs, one_hot_features], axis=1)
 
+    print("Score,  Price,  URL")
     for idx, ad in car_df.sort_values("Price").iterrows():
         ad = pd.DataFrame(ad).T
         ad_vector = make_ad_vector(ad, features_index, encoder, specs)
         dot_product = np.dot(ad_vector, max_price_ad_vector.T)
         if dot_product > np.dot(max_price_ad_vector, max_price_ad_vector.T) // 2:
-            print(dot_product.item(), ad.Price, ad.URL)
+            print(dot_product.item(), ad.Price.iloc[0], ad.URL.iloc[0])
 
     
