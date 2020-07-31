@@ -166,3 +166,16 @@ def scrape_pages(startPage, endPage, max_retries, headers1, headers2, max_thread
                
     for i, thread in enumerate(scraping_threads):
         thread.join()
+
+
+if __name__ == "__main__":
+    count = 1
+    for batch in range(1, 501, batch_count):
+        scrape_pages(batch, batch+batch_count, max_retries, headers1, headers2, 5, True)
+        print("  Finished mini-batch {}  ".format(count).center(100, '='))
+        count += 1
+        
+    df = pd.DataFrame(all_ad_dicts)
+
+    df.to_csv('olx_raw.csv', index=False)
+    print('The scraped data was succesfully converted into olx_raw.csv')
