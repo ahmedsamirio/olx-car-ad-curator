@@ -1,5 +1,5 @@
 max_retries = 5
-batch_count = 1
+batch_count = 20
 
 all_ad_dicts = []
 n_pages = 0

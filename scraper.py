@@ -46,10 +46,11 @@ def make_ad_dict(link_soup, link):
     """ Returns a dictionary with all the relevant ad info """
     
     ad_dict = dict.fromkeys(['Brand', 'Model', 'Governerate', 'City', 'Date', 'Year', 'Kilometers', 'Pay_type',
-                         'Ad_type','Transmission', 'CC', 'Chasis', 'Features', 'Color', 'Price', 'URL'])
+                         'Ad_type','Transmission', 'CC', 'Chasis', 'Features', 'Color', 'Price', 'URL', 'imgs'])
 
     ad_dict['Date'] = get_date(link_soup)
     ad_dict['Price'] = get_price(link_soup)
+    ad_dict['imgs'] = get_imgs(link_soup)
     ad_dict['City'], ad_dict['Governerate'] = get_ad_location(link_soup)
     ad_dict['Brand'] = get_brand(link_soup, ad_dict['City'])
     ad_dict['URL'] = link['href']
@@ -71,7 +72,6 @@ def make_ad_dict(link_soup, link):
     ad_dict['Color'] = get_info_from_id('اللون', ad_info, ad_info_ids)
     ad_dict['Chasis'] = get_info_from_id('نوع الهيكل', ad_info, ad_info_ids)
     ad_dict['Ad_type'] = get_info_from_id('نوع الإعلان', ad_info, ad_info_ids)
-
     print("Finished ad dict")
 
     return ad_dict
@@ -111,6 +111,15 @@ def get_price(link_soup):
 def get_brand(link_soup, city): 
     brand = link_soup.select('td.middle span')[-1].get_text().replace(city, '')
     return brand
+
+
+def get_imgs(link_soup):
+    imgs = []
+    for div in link_soup.findAll("div", {"class": "photo-glow"}):
+        img = div.find('img').get('src')
+        imgs.append(img)
+    return imgs
+
 
 def get_res(url, MAX_RETRIES, headers):
     session = requests.Session()
